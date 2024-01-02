@@ -1,71 +1,66 @@
-/* 
-    0 = rock
-    1 = paper
-    2 = scissors
-*/
-let user = window.prompt("Rock paper scssor? ");
+const result = document.querySelector("#result");
+const buttons = document.querySelectorAll("button");
+const userScore = document.querySelector("#player-score");
+const aiScore = document.querySelector("#computer-score");
+const winner = document.querySelector("#winner");
+const currentRound = document.querySelector("#round");
+const resetbtn = document.querySelector("#reset");
 
-let computerChoice = ["Rock", "Paper", "Scissor"];
-
-let computerScore = 0;
 let playerScore = 0;
+let computerScore = 0;
+let round = 0;
 
-function game(rounds) {
-  let player = playerChoice("Scissor");
-  let computer = getComputerChoice();
+buttons.forEach((button) => {
+  button.addEventListener("click", () => {
+    if (round != 10) {
+      playRound(button.id, computerChoice());
+      round++;
+      console.log(round);
+      currentRound.textContent = round;
+      if (round == 10) {
+        if (playerScore == computerScore) {
+          winner.textContent = "No one wins";
+        } else if (playerScore > computerScore) {
+          winner.textContent = "Player wins";
+        } else {
+          winner.textContent = "Computer Wins";
+        }
+      }
+    }
+  });
+});
 
-  for (let i = 0; i < rounds; i++) {
-    console.log(playRound(player, computer));
-  }
-
-  console.log(`Player score: ${playerScore}`);
-  console.log(`Computer score: ${computerScore}`);
-}
-
-function playerChoice(choice) {
-  switch (choice) {
-    case "Rock":
-      return "Rock";
-    case "Paper":
-      return "Paper";
-    case "Scissor":
-      return "Scissor";
-    default:
-      return "Something went wrong";
-  }
-}
-
-function getComputerChoice() {
-  let random = getRandom();
-  return computerChoice[random];
-}
-
-function getRandom() {
-  return Math.floor(Math.random() * computerChoice.length);
+function computerChoice() {
+  const computer = ["rock", "paper", "scissor"];
+  const computerChoice = Math.floor(Math.random() * computer.length);
+  return computer[computerChoice];
 }
 
 function playRound(player, computer) {
   if (player === computer) {
-    return "It's a tie!";
-  }
-
-  if (
-    (player === "Rock" && computer === "Scissor") ||
-    (player === "Paper" && computer === "Rock") ||
-    (player === "Scissor" && computer === "Paper")
+    result.innerHTML = "It's a tie!";
+  } else if (
+    (player === "rock" && computer === "scissor") ||
+    (player === "paper" && computer === "rock") ||
+    (player === "scissor" && computer === "paper")
   ) {
     playerScore++;
-    return `Player wins! ${player} beats ${computer}`;
-  }
-
-  if (
-    (computer === "Rock" && player === "Scissor") ||
-    (computer === "Paper" && player === "Rock") ||
-    (computer === "Scissor" && player === "Paper")
-  ) {
+    userScore.textContent = playerScore;
+    result.textContent = `Player wins, ${player} beats ${computer}`;
+  } else {
     computerScore++;
-    return `Computer wins! ${computer} beats ${player}`;
+    aiScore.textContent = computerScore;
+    result.textContent = `Computer Wins, ${computer} beats ${player}`;
   }
 }
 
-game(5);
+function resetGame() {
+  playerScore = 0;
+  computerScore = 0;
+  round = 0;
+  userScore.textContent = playerScore;
+  aiScore.textContent = computerScore;
+  currentRound.textContent = round;
+}
+
+resetbtn.addEventListener("click", resetGame);
